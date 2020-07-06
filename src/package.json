@@ -1,0 +1,21 @@
+{
+  "name": "pokemon-stadium-2-poketable",
+  "version": "1.0.0",
+  "description": "",
+  "keywords": [
+    "react",
+    "react-table",
+    "table",
+    "datagrid",
+    "grid"
+  ],
+  "main": "index.js",
+  "dependencies": {
+    "react-table": "6.7.0-alpha-0",
+    "react-dom": "15.5.3",
+    "react": "15.5.3",
+    "pokemon-images": "2.0.1",
+    "react-tabs": "2.3.0",
+    "match-sorter": "1.8.1"
+  }
+}

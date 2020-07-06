@@ -1,0 +1,30 @@
+{
+  "name": "react-table-simple-table",
+  "version": "0.0.754",
+  "description": null,
+  "keywords": [
+    "react",
+    "react-table",
+    "table",
+    "datagrid",
+    "grid"
+  ],
+  "main": "index.js",
+  "dependencies": {
+    "react-table": "6.7.0-alpha-0",
+    "react-dom": "15.5.3",
+    "react": "15.5.3",
+    "pokemon-images": "2.0.1",
+    "react-tabs": "2.3.0",
+    "match-sorter": "1.8.1"
+  },
+  "devDependencies": {
+    "react-scripts": "1.0.0"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  }
+}
