@@ -37,6 +37,7 @@ export class AttackTable extends React.Component {
       return 0;
     }
     const move = getMove(moveName);
+    if (!move) return;
     const stat = move.category;
     let atkStat = "";
     let defStat = "";
@@ -83,7 +84,6 @@ export class AttackTable extends React.Component {
     }
     const maxPct = (100 * maxDam) / defender.hp;
     const minPct = (100 * maxDam * 0.85) / defender.hp;
-    console.log(attacker, defender, maxPct, minPct);
     return `Damage: ${this.attackDamageString(maxDam)} (${Math.round(
       minPct
     )}% - ${Math.round(maxPct)}%)`;
@@ -119,6 +119,7 @@ export class AttackTable extends React.Component {
     ].map(m => this.longAttackDamageString(defender, attacker, m));
     return (
       <div>
+        Damage of {attacker.name} vs:
         <ReactTable
           filterable
           data={this.props.data}
@@ -164,7 +165,9 @@ export class AttackTable extends React.Component {
             }
           ]}
         />
+	Defender:
         {defender !== null && pokeBlock(defender, defDams)}
+	Attacker
         {defender !== null && pokeBlock(attacker, atkDams)}
         {defender === null && pokeBlock(attacker)}
       </div>

@@ -13,16 +13,20 @@ class App extends React.Component {
     this.state = {
       data: makeData(),
       clickedPokemon: null,
-      comparePokemon: []
+      comparePokemon: [],
+      attackerPokemon: null,
     };
     this._updateSelected = this._updateSelected.bind(this);
     this._onPokemonClick = this._onPokemonClick.bind(this);
   }
 
-  _updateSelected(newChecked) {
+  _updateSelected(newChecked, attackerPokemon) {
     let newComparePokemon = makeData();
     newComparePokemon = newComparePokemon.filter(p => newChecked[p.pokeid]);
-    this.setState({ comparePokemon: newComparePokemon });
+    this.setState({
+      comparePokemon: newComparePokemon,
+      attackerPokemon: this.state.data[attackerPokemon]
+    });
   }
 
   _onPokemonClick(pokemon) {
@@ -43,17 +47,21 @@ class App extends React.Component {
             <Tab>Moves</Tab>
             <Tab>Team ({this.state.comparePokemon.length})</Tab>
             <Tab>Resistances ({this.state.comparePokemon.length})</Tab>
-            <Tab>
-              Damage{" "}
-              {this.state.clickedPokemon !== null &&
-                `(${this.state.clickedPokemon.name})`}
-            </Tab>
+	    { this.state.attackerPokemon &&
+              <Tab>
+                Damage{" "}
+                {this.state.attackerPokemon &&
+                  `(${this.state.attackerPokemon.name})`}
+              </Tab>
+            }
           </TabList>
           <TabPanel>
             <PokeTable
               data={data}
               updateSelected={this._updateSelected}
               onPokemonClick={this._onPokemonClick}
+	      attacker={this.state.attackerPokemon}
+	      checked={this.state.comparePokemon}
             />
           </TabPanel>
           <TabPanel>
@@ -73,16 +81,18 @@ class App extends React.Component {
           <TabPanel>
             <ResistTable pokemon={this.state.comparePokemon} />
           </TabPanel>
-          <TabPanel>
-            <AttackTable
-              attacker={this.state.pokemon}
-              data={
-                this.state.comparePokemon.length > 0
-                  ? this.state.comparePokemon
-                  : data
-              }
-            />
-          </TabPanel>
+	  { this.state.attackerPokemon &&
+            <TabPanel>
+              <AttackTable
+                attacker={this.state.attackerPokemon}
+                data={
+                  this.state.comparePokemon.length > 0
+                    ? this.state.comparePokemon
+                    : data
+                }
+              />
+            </TabPanel>
+           }
         </Tabs>
       </div>
     );

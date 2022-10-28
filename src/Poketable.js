@@ -56,19 +56,22 @@ export function statCol(name, accessor, data) {
 export class PokeTable extends React.Component {
   constructor(props) {
     super(props);
-    let checkedPokemon = {};
+	  console.log(props)
+    let checkedPokemon = this.props.checked || {};
     if (props.selectAll) {
       props.data.forEach(p => (checkedPokemon[p.pokeid] = true));
     }
     this.state = {
       selectAll: props.selectAll ? SELECT_ALL : SELECT_NONE,
-      checkedPokemon: checkedPokemon,
+      checkedPokemon: checkedPokemon.reduce((c, {pokeid: p}) => ({ ...c, [p]: true}), {}),
+      attackerPokemon: this.props.attacker ? this.props.attacker.pokeid : null,
       clickedPokemon: null
     };
     this._toggleRow = this._toggleRow.bind(this);
     this._toggleSelectAll = this._toggleSelectAll.bind(this);
     this._checkCol = this._checkCol.bind(this);
     this._checkHeader = this._checkHeader.bind(this);
+    this._radioCol = this._radioCol.bind(this);
   }
 
   _moveCol(name, accessor) {
@@ -83,14 +86,19 @@ export class PokeTable extends React.Component {
     };
   }
 
-  _toggleRow(id) {
-    let newChecked = this.state.checkedPokemon;
-    newChecked[id] = !newChecked[id];
-    this.props.updateSelected(newChecked);
-    this.setState({
-      selectAll: SELECT_SOME,
-      checkedPokemon: newChecked
-    });
+  _toggleRow(id, radio) {
+    if (radio) {
+      this.setState({ attackerPokemon: id });
+      this.props.updateSelected(this.state.checkedPokemon, id);
+    } else {
+      let newChecked = this.state.checkedPokemon;
+      newChecked[id] = !newChecked[id];
+      this.setState({
+        selectAll: SELECT_SOME,
+        checkedPokemon: newChecked
+      });
+      this.props.updateSelected(newChecked, this.state.attackerPokemon);
+    }
   }
 
   _toggleSelectAll() {
@@ -100,7 +108,7 @@ export class PokeTable extends React.Component {
         newChecked[p.pokeid] = true;
       });
     }
-    this.props.updateSelected(newChecked);
+    this.props.updateSelected(newChecked, this.state.attackerPokemon);
     this.setState({
       checkedPokemon: newChecked,
       selectAll: this.state.selectAll === SELECT_NONE ? SELECT_ALL : SELECT_NONE
@@ -149,6 +157,27 @@ export class PokeTable extends React.Component {
       }
     };
   }
+
+  _radioCol() {
+    return {
+      id: "radio",
+      className: "center",
+      accessor: "",
+      width: 50,
+      sortable: false,
+      filterable: false,
+      Cell: ({ original }) => {
+        return (
+          <input
+            type="radio"
+            className="radio"
+            checked={this.state.attackerPokemon && this.state.attackerPokemon === original.pokeid}
+            onChange={() => this._toggleRow(original.pokeid, true)}
+          />
+        );
+      }
+    };
+  }
   /*
   <button
           onClick={() => [3, 65, 143, 200, 230, 248].map(this._toggleRow)}
@@ -179,6 +208,10 @@ export class PokeTable extends React.Component {
             {
               Header: "Team",
               columns: [this._checkCol()]
+            },
+            {
+              Header: "Dmg",
+              columns: [this._radioCol()]
             },
             {
               Header: "Name",
